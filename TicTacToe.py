@@ -2,7 +2,7 @@
 import os
 
 move_possibility = list('qweasdzxc')
-board = [[' ', '  ', ' '], [' ', '  ', ' '], [' ', '  ', ' ']]
+board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
 move_info = 'Please input your move using the letters QWEASDZXC. For example Q is the left upper corner. \n'
 os.system('clear')
 exit_list = ['exit', 'wyjscie', "wyjście", 'quit']
@@ -14,14 +14,13 @@ def init_board(player):
     current_player = changing_player(player)
     print('player 1' if current_player is True else 'player 2')
     for field in range(len(board)):
-        print(' '+ board[field][0] + '|' + board[field][1] + '|' + board[field][2]+ ' ')
-        if field<2:
-            print ('-------')
+        print(' ' + board[field][0] + '|' + board[field][1] + '|' + board[field][2] + ' ')
+        if field < 2:
+            print('-------')
 
 def correctness_move():
     current_move = get_move()
     if current_move in move_possibility:
-        print('ok')
         mark(current_move, player)
     elif current_move in exit_list:
         exit()
@@ -37,7 +36,12 @@ def get_move():
 
 
 def calculate_empty_field(board):
-    empty_field = (len(board) ** 2) + 1
+    list_field_in_row = []
+    for row in board:
+        list_field_in_row.append(row.count(' '))
+
+    empty_field = sum(list_field_in_row)
+
     return empty_field
 
 
@@ -70,16 +74,57 @@ def changing_player(player = True):
     return player
 
 
+def win(board):
+    # horizontal
+    for row in board:
+        if row.count(row[0]) == len(row) and row[0] != ' ':
+            finish_gamge = row[0]
+            return finish_gamge
+    # vertical
+    for col in range(len(board[0])):
+        check = []
+        for row in board:
+            check.append(row[col])
+        if check.count(check[0]) == len(check) and check[0] != ' ':
+            finish_gamge = check[0]
+            return finish_gamge
+
+    # / diagonal
+    diags = []
+    for idx, reverse_idx in enumerate(reversed(range(len(board)))):
+        diags.append(board[idx][reverse_idx])
+
+    if diags.count(diags[0]) == len(diags) and diags[0] != ' ':
+        finish_gamge = diags[0]
+        return finish_gamge
+    # \ diagonal
+    diags = []
+    for ix in range(len(board)):
+        diags.append(board[ix][ix])
+
+    if diags.count(diags[0]) == len(diags) and diags[0] != ' ':
+        finish_gamge = diags[0]
+        return finish_gamge
+
+
+
 empty_field = calculate_empty_field(board)
+
 
 while empty_field > 0:
 
-    print(empty_field)
+    #print(empty_field)
+    #empty_field = board.count(' ')
+    #print(empty_field)
     init_board(player)
     correctness_move()
     player = changing_player(player)
-    #print(player)
-    # print(board)
-    empty_field -= 1
+    #empty_field -= 1
+    winner = win(board)
+    if winner == 'X' or winner == 'O':
+        print(f'Player {winner} has won!')
+        break
+    empty_field = calculate_empty_field(board)
     if empty_field == 0:
         print("It's a tie!")
+        break
