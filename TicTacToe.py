@@ -14,8 +14,9 @@ def init_board(player):
     current_player = changing_player(player)
     print('player 1' if current_player is True else 'player 2')
     for field in range(len(board)):
-        print(board[field])
-
+        print(' '+ board[field][0] + '|' + board[field][1] + '|' + board[field][2]+ ' ')
+        if field<2:
+            print ('-------')
 
 def correctness_move():
     current_move = get_move()
